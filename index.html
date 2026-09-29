@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>কোড-কবচ প্রো এ কে এম রেদওয়ান — HTML সোর্স প্রোটেক্টর</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<link rel="stylesheet" href="secure.css">
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="brand">
+      <img class="brand-logo" src="https://ibb.co/5ZVC6fxi" alt="কোড-কবচ লোগো" onerror="this.style.display='none'">
+      <h1><span class="kavach">কোড</span>-কবচ <span style="font-size:14px;color:var(--muted);font-weight:400;">এ কে এম রেদওয়ান</span></h1>
+      <span class="tag">HTML source hardening tool — client-side, কোনো ডেটা সার্ভারে যায় না</span>
+      <span class="badge">পলিমরফিক আউটপুট</span>
+    </div>
+    <p class="desc">
+      আপনার HTML পেস্ট করুন — নিচের অপশন অনুযায়ী কোড মিনিফাই, মাল্টি-লেয়ার এনকোড (প্রতিবার এলোমেলো ক্রমে),
+      চাংক-স্প্লিট ও ভ্যারিয়েবল-র‍্যান্ডমাইজ করে এমন একটি ভার্সন তৈরি হবে যা সাধারণ ফাইল/টেক্সট ভিউয়ার দিয়ে সহজে
+      বোঝা যায় না, অথচ ব্রাউজার/ওয়েবভিউতে আগের মতোই কাজ করে। জেনারেট করার পর আউটপুট স্বয়ংক্রিয়ভাবে একটা লুকানো
+      ফ্রেমে চালিয়ে যাচাই করা হয় যে এটা ঠিকমতো লোড হচ্ছে কিনা।
+    </p>
+  </div>
+  <div class="header-actions">
+    <button class="icon-btn" id="btnTheme">থিম পাল্টান</button>
+  </div>
+</header>
+
+<main>
+
+  <div class="group">
+    <p class="group-label">প্রিসেট</p>
+    <div class="preset-row">
+      <select class="field-select" id="presetSelect">
+        <option value="extreme">🔒 চরম সুরক্ষা (সর্বোচ্চ — সব লেয়ার চালু)</option>
+        <option value="balanced">ব্যালেন্সড (ডিফল্ট)</option>
+        <option value="high">হাই সিকিউরিটি</option>
+        <option value="light">লাইট / পারফরম্যান্স</option>
+        <option value="minifyonly">শুধু মিনিফাই</option>
+      </select>
+      <button class="ghost" id="btnApplyPreset">প্রিসেট প্রয়োগ করুন</button>
+      <span class="hint">প্রিসেট প্রয়োগ করলে নিচের সব টগল/ফিল্ড এক ক্লিকে সেট হয়ে যাবে — এরপর চাইলে হাতে আরও পরিবর্তন করতে পারবেন।</span>
+    </div>
+  </div>
+
+  <div class="group">
+    <p class="group-label">বেসিক — মিনিফাই ও প্যাকিং</p>
+    <div class="toggles-row">
+      <label class="toggle"><input type="checkbox" id="optMinify" checked><span class="switch"></span>মিনিফাই (HTML/CSS/JS)</label>
+      <label class="toggle"><input type="checkbox" id="optPack" checked><span class="switch"></span>এনকোড ও প্যাক (Base64 loader)</label>
+      <label class="toggle"><input type="checkbox" id="optXor"><span class="switch"></span>XOR লেয়ার</label>
+    </div>
+    <div class="fields-row">
+      <div class="field">
+        পাস সংখ্যা (XOR)
+        <input type="number" id="xorPasses" min="1" max="5" value="1">
+      </div>
+      <div class="field">
+        Base href (ঐচ্ছিক)
+        <input type="text" id="baseHref" placeholder="https://example.com/dir/">
+        <span class="hint">রিলেটিভ ছবি/CSS/JS লিংক ঠিকমতো লোড হওয়ার জন্য</span>
+      </div>
+      <div class="field">
+        ওয়াটারমার্ক আইডি
+        <input type="text" id="watermark" placeholder="ঐচ্ছিক, যেমন client-42">
+      </div>
+    </div>
+  </div>
+
+  <div class="group">
+    <p class="group-label">অ্যাডভান্সড এনকোডিং <span class="pill">পলিমরফিক</span></p>
+    <div class="toggles-row">
+      <label class="toggle"><input type="checkbox" id="optRotate" checked><span class="switch"></span>রোটেট সাইফার লেয়ার</label>
+      <label class="toggle"><input type="checkbox" id="optReverse" checked><span class="switch"></span>রিভার্স লেয়ার</label>
+      <label class="toggle"><input type="checkbox" id="optChunk" checked><span class="switch"></span>চাংক-স্প্লিট + রি-অর্ডার</label>
+      <label class="toggle"><input type="checkbox" id="optApiObf" checked><span class="switch"></span>API নাম অস্পষ্টকরণ</label>
+      <label class="toggle"><input type="checkbox" id="optJunk" checked><span class="switch"></span>জাংক কোড ইনজেকশন</label>
+      <label class="toggle"><input type="checkbox" id="optRandomOrder" checked><span class="switch"></span>লেয়ার-ক্রম র‍্যান্ডমাইজ</label>
+      <label class="toggle"><input type="checkbox" id="optWasmCore"><span class="switch"></span>WASM কোর দিয়ে XOR/রোটেট ডিকোড <span class="lbl-warn">(পরীক্ষামূলক)</span></label>
+      <label class="toggle"><input type="checkbox" id="optAesGcm"><span class="switch"></span>AES-GCM এনক্রিপশন (Web Crypto) <span class="lbl-warn">(পরীক্ষামূলক, ইন্টারনেট/HTTPS লাগবে)</span></label>
+    </div>
+    <div class="fields-row">
+      <div class="field">
+        রোটেট শিফট
+        <input type="number" id="rotateShift" placeholder="র‍্যান্ডম" style="width:80px;">
+        <span class="hint">খালি রাখলে প্রতিবার নতুন র‍্যান্ডম মান</span>
+      </div>
+      <div class="field">
+        চাংক সংখ্যা
+        <input type="number" id="chunkCount" min="2" max="12" value="5">
+      </div>
+      <div class="field">
+        জাংক লাইন সংখ্যা
+        <input type="number" id="junkCount" min="1" max="10" value="3">
+      </div>
+    </div>
+  </div>
+
+  <div class="group">
+    <p class="group-label">অ্যান্টি-ইন্সপেকশন <span class="pill">কপি-প্রতিরোধী — অভেদ্য নয়</span></p>
+    <div class="toggles-row">
+      <label class="toggle"><input type="checkbox" id="optNoRightClick"><span class="switch"></span>রাইট-ক্লিক ব্লক</label>
+      <label class="toggle"><input type="checkbox" id="optNoDevtoolsKeys"><span class="switch"></span>F12 / Ctrl+Shift+I ব্লক</label>
+      <label class="toggle"><input type="checkbox" id="optDebugTrap"><span class="switch"></span>ডিবাগার ট্র্যাপ <span class="lbl-warn">(agressive)</span></label>
+      <label class="toggle"><input type="checkbox" id="optNoSelect"><span class="switch"></span>টেক্সট সিলেকশন/কপি ব্লক</label>
+      <label class="toggle"><input type="checkbox" id="optNoImgDrag"><span class="switch"></span>ছবি ড্র্যাগ/সেভ ব্লক</label>
+      <label class="toggle"><input type="checkbox" id="optFrameBust"><span class="switch"></span>আইফ্রেমে এম্বেড ব্লক</label>
+      <label class="toggle"><input type="checkbox" id="optConsoleWarn"><span class="switch"></span>কনসোল ওয়ার্নিং মেসেজ</label>
+      <label class="toggle"><input type="checkbox" id="optDevToolsDetect"><span class="switch"></span>DevTools খোলা ডিটেক্ট করলে কনটেন্ট লুকান</label>
+      <label class="toggle"><input type="checkbox" id="optConsoleOverride"><span class="switch"></span>কনসোল আউটপুট নিষ্ক্রিয় করুন</label>
+      <label class="toggle"><input type="checkbox" id="optHeartbeat"><span class="switch"></span>ইন্টিগ্রিটি হার্টবিট (স্ক্রিপ্ট সরালে রিলোড)</label>
+      <label class="toggle"><input type="checkbox" id="optBotDetect"><span class="switch"></span>হেডলেস/অটোমেশন ব্রাউজার ব্লক</label>
+      <label class="toggle"><input type="checkbox" id="optTimingDebug"><span class="switch"></span>টাইমিং-বেসড ডিবাগার ডিটেকশন</label>
+      <label class="toggle"><input type="checkbox" id="optKeyObfuscate" checked><span class="switch"></span>এনকোডিং-কী অস্পষ্টকরণ (XOR কী প্লেইনটেক্সটে থাকবে না)</label>
+    </div>
+  </div>
+
+  <div class="group">
+    <p class="group-label">সেলফ-ডিস্ট্রাক্ট (ঐচ্ছিক)</p>
+    <div class="toggles-row">
+      <label class="toggle"><input type="checkbox" id="optSelfDestruct"><span class="switch"></span>সেলফ-ডিস্ট্রাক্ট চালু করুন</label>
+    </div>
+    <div class="fields-row">
+      <div class="field">
+        সর্বোচ্চ ভিউ সংখ্যা (এই ব্রাউজারে)
+        <input type="number" id="viewLimit" min="0" value="0">
+        <span class="hint">০ = সীমাহীন। ব্রাউজারের localStorage-এ গোনা হয়, তাই ভিন্ন ব্রাউজার/ডিভাইস/ইনকগনিটো থেকে আলাদাভাবে গোনা হবে — সার্ভার-সাইড ট্র্যাকিং না।</span>
+      </div>
+      <div class="field">
+        মেয়াদ (মিনিট, প্রথম ওপেন থেকে)
+        <input type="number" id="timeLimitMinutes" min="0" value="0">
+        <span class="hint">০ = সময়সীমা নেই</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group">
+    <p class="group-label">অ্যাক্সেস কন্ট্রোল (ঐচ্ছিক)</p>
+    <div class="fields-row" style="margin-top:0;">
+      <div class="field">
+        ডোমেইন লক
+        <input type="text" id="domainLock" placeholder="example.com, *.example.com" style="width:230px;">
+        <span class="hint">খালি রাখলে যেকোনো ডোমেইনে চলবে</span>
+      </div>
+      <div class="field">
+        মেয়াদ শেষ (তারিখ)
+        <input type="date" id="expiryDate">
+      </div>
+      <div class="field">
+        মেয়াদ শেষের পর মেসেজ
+        <input type="text" id="expiryMsg" placeholder="এই কনটেন্টের মেয়াদ শেষ হয়ে গেছে" style="width:230px;">
+      </div>
+    </div>
+  </div>
+
+  <div class="workspace">
+    <div class="pane">
+      <div class="pane-head">
+        <span class="title">ইনপুট — অরিজিনাল HTML</span>
+        <span class="stat" id="inStat">0 B</span>
+      </div>
+      <textarea id="input" placeholder="&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  ...
+&lt;/html&gt;
+
+এখানে আপনার সম্পূর্ণ HTML ফাইলের কোড পেস্ট করুন"></textarea>
+      <div class="pane-foot">
+        <button class="ghost" id="btnUpload">ফাইল আপলোড</button>
+        <input type="file" id="fileInput" accept=".html,.htm" style="display:none">
+        <button class="ghost" id="btnClear">খালি করুন</button>
+      </div>
+    </div>
+
+    <div class="pane">
+      <div class="pane-head">
+        <span class="title">আউটপুট — প্রোটেক্টেড HTML</span>
+        <span class="validate-stat" id="validateStat"></span>
+        <span class="stat" id="outStat">—</span>
+      </div>
+      <textarea id="output" placeholder="প্রোটেক্ট বাটনে ক্লিক করলে ফলাফল এখানে দেখা যাবে" readonly></textarea>
+      <div class="pane-foot">
+        <button class="ghost" id="btnCopy" disabled>কপি করুন</button>
+        <button class="ghost" id="btnDownload" disabled>ডাউনলোড (.html)</button>
+        <button class="ghost" id="btnDownloadZip" disabled>প্রজেক্ট ZIP ডাউনলোড</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="run-row">
+    <button class="primary" id="btnRun">প্রোটেক্ট করুন</button>
+    <button class="secondary" id="btnPreview" disabled>নতুন ট্যাবে প্রিভিউ (টেস্ট)</button>
+    <span class="savings" id="savings"></span>
+    <span class="hint">শর্টকাট: Ctrl/Cmd + Enter</span>
+  </div>
+
+  <div class="group">
+    <p class="group-label">রান হিস্টোরি <span class="pill">এই সেশনে সর্বশেষ ৫টি</span></p>
+    <div class="history-list" id="historyList">
+      <div class="history-empty" id="historyEmpty">এখনো কোনো রান হয়নি।</div>
+    </div>
+  </div>
+
+  <div class="group">
+    <p class="group-label">ব্যাচ প্রসেসিং <span class="pill">একাধিক ফাইল → ZIP</span></p>
+    <div class="fields-row" style="margin-top:0;">
+      <button class="ghost" id="btnBatchUpload">একাধিক ফাইল বাছাই করুন</button>
+      <input type="file" id="batchFileInput" accept=".html,.htm" multiple style="display:none">
+      <span class="hint">উপরে সেট করা সব অপশন (মিনিফাই, এনকোডিং লেয়ার, অ্যান্টি-ইন্সপেকশন ইত্যাদি) প্রতিটি ফাইলে প্রয়োগ হবে — প্রতিটি ফাইলের নিজের র‍্যান্ডম কী/ভ্যারিয়েবল-নাম থাকবে। প্রতিটি ফাইল ZIP-এর ভেতরে নিজস্ব প্রজেক্ট ফোল্ডার (index.html + css/secure.css + js/secure.js) হিসেবে থাকবে।</span>
+    </div>
+    <div class="batch-list" id="batchList"></div>
+    <div class="fields-row" style="margin-top:10px;">
+      <button class="primary" id="btnBatchRun" disabled>ব্যাচ প্রোটেক্ট করে ZIP ডাউনলোড</button>
+      <span class="hint" id="batchStatus"></span>
+    </div>
+  </div>
+
+  <div class="notice">
+    <b>মাথায় রাখুন:</b>
+    <ul>
+      <li>এই টুল শুধু কপি-পেস্ট এবং সাধারণ ফাইল/টেক্সট ভিউয়ারে সোর্স পড়া <b>নিরুৎসাহিত ও কঠিন</b> করে। এটা কোনো এনক্রিপশন না — একজন দক্ষ ডেভেলপার ব্রাউজারের রানটাইম আউটপুট থেকে চূড়ান্ত HTML দেখে ফেলতে পারবেন। সংবেদনশীল ডেটা (পাসওয়ার্ড, API key, পেমেন্ট লজিক) কখনো শুধু ক্লায়েন্ট-সাইডে না রেখে সার্ভারে রাখুন।</li>
+      <li>এই টুল কোডের ফাংশনালিটি অক্ষত রেখে শুধু সোর্স পড়া কঠিন করে — মূল HTML/CSS/JS-এর ভ্যারিয়েবল/ফাংশনের নাম ভাঙে না, তাই <span style="color:var(--text)">onclick=""</span> এর মতো ইনলাইন কলগুলো নিরাপদ থাকে।</li>
+      <li>ছবি/CSS/JS-এর লিংক <b>যেমন ছিল তেমনই</b> আউটপুটে থাকে — প্রোটেক্টেড ফাইলটা যদি অরিজিনাল ফাইলের একই ফোল্ডারে/URL-এ রাখেন তাহলে রিলেটিভ লিংকও ঠিক চলবে। ফোল্ডার পাল্টালে <b>Base href</b> ফিল্ডে সেই ডিরেক্টরির পুরো URL দিন, অথবা ছবি/CSS-এ absolute URL ব্যবহার করুন — এটাই সবচেয়ে নিরাপদ।</li>
+      <li><b>DevTools ডিটেক্ট</b> ফিচারটি window এর outer/inner size পার্থক্য মেপে docked DevTools শনাক্ত করে — এটা false-positive দিতে পারে (যেমন ছোট স্ক্রিনে জুম করা থাকলে), তাই প্রোডাকশনে দেওয়ার আগে টেস্ট করে নিন।</li>
+      <li><b>টাইমিং-বেসড ডিবাগার ডিটেকশন</b> ও <b>কী-অস্পষ্টকরণ</b> কপি-প্রতিরোধের মাত্রা আরও বাড়ায়, কিন্তু কোনোটাই দুর্ভেদ্য না — একজন দক্ষ ব্যক্তি ব্রাউজারের network/elements panel থেকে রানটাইমে তৈরি হওয়া চূড়ান্ত HTML সবসময় দেখতে পারবেন।</li>
+      <li><b>সেলফ-ডিস্ট্রাক্ট</b> (ভিউ/সময়সীমা) সম্পূর্ণভাবে ভিজিটরের নিজের ব্রাউজারের localStorage-এ নির্ভরশীল — ভিজিটর চাইলে ব্রাউজার ডেটা মুছে, ভিন্ন ব্রাউজার/ডিভাইস বা ইনকগনিটো মোড ব্যবহার করে সীমা এড়াতে পারেন। এটা প্রকৃত সার্ভার-সাইড অ্যাক্সেস-কন্ট্রোলের বিকল্প না।</li>
+      <li>প্রজেক্ট-ZIP ডাউনলোডের জন্য ইন্টারনেট সংযোগ প্রয়োজন (JSZip লাইব্রেরি CDN থেকে লোড হয়)। সংযোগ না থাকলে সাধারণ ".html ডাউনলোড" বাটন ব্যবহার করুন।</li>
+      <li>প্রোডাকশনে দেওয়ার আগে সবসময় "নতুন ট্যাবে প্রিভিউ" দিয়ে টেস্ট করে নিন।</li>
+    </ul>
+  </div>
+
+</main>
+
+<script src="secure.js"></script>
+</body>
+</html>
